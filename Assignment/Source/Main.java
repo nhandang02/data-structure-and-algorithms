@@ -19,6 +19,7 @@ public class Main {
     };
 
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
         File f = new File(".//output");
         if (!f.exists()) {
             f.mkdirs();
@@ -67,6 +68,10 @@ public class Main {
                     break;
             }
         }
+        long endTime = System.currentTimeMillis(); // Record end time
+        long totalTime = endTime - startTime; // Calculate total execution time in milliseconds
+
+        System.out.println("Total execution time: " + totalTime + " milliseconds");
     }
 
     public static <E> boolean writeFile(String path, ArrayList<E> rows) {

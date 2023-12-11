@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/Exer1.IntLinkedList" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exer2.Stack_Queue" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exer3.Recursion_Iteration" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exer4.Sorts" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Lab3-Recursive" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Lab4-Sort" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Real MidTerm Test" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

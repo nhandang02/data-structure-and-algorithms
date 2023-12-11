@@ -3,13 +3,13 @@ public class Rating {
     private int userId;
     private int movieId; 
     private int rating;
-    private long ratingTimestamp;
+    private long timestamps;
 
-    public Rating(int userId, int movieId, int rating, long ratingTimestamp) {
+    public Rating(int userId, int movieId, int rating, long timestamps) {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
-        this.ratingTimestamp = ratingTimestamp;
+        this.timestamps = timestamps;
     }
 
     public int getUserId() {
@@ -37,16 +37,16 @@ public class Rating {
     }
 
     public long getTimestamp() {
-        return ratingTimestamp;
+        return timestamps;
     }
 
-    public void setTimestamp(long ratingTimestamp) {
-        this.ratingTimestamp = ratingTimestamp;
+    public void setTimestamp(long timestamps) {
+        this.timestamps = timestamps;
     }
 
     @Override
     public String toString() {
-        return "Rating[" + userId + ", " + movieId + ", " + rating + ", " + ratingTimestamp + "]";
+        return "Rating[" + userId + ", " + movieId + ", " + rating + ", " + timestamps + "]";
     }
 
 }

@@ -1,5 +1,6 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class RatingManagement {
@@ -15,45 +16,36 @@ public class RatingManagement {
     }
 
     private ArrayList<Rating> loadEdgeList(String ratingPath) {
-        
         ArrayList<Rating> ratings = new ArrayList<>();
-        try {
-            File ratingFile = new File(ratingPath);
-            Scanner sc = new Scanner(ratingFile);
-            sc.nextLine(); // skip header
-            
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(ratingPath))) {
+            String line = reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
                 String[] attributes = line.split(",");
-                
+
                 int userId = Integer.parseInt(attributes[0]);
-                int movieId = Integer.parseInt(attributes[1]); 
-                int rating = Integer.parseInt(attributes[2]);  
+                int movieId = Integer.parseInt(attributes[1]);
+                int rating = Integer.parseInt(attributes[2]);
                 long timestamp = Long.parseLong(attributes[3]);
-                
+
                 Rating r = new Rating(userId, movieId, rating, timestamp);
                 ratings.add(r);
             }
-            
-            sc.close();
-
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return ratings; 
+        return ratings;
     }
 
     private ArrayList<Movie> loadMovies(String moviePath) {
-        
         ArrayList<Movie> movies = new ArrayList<>();
-        try {
-            File movieFile = new File(moviePath);
-            Scanner sc = new Scanner(movieFile);
-            sc.nextLine(); // skip header
-            
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(moviePath))) {
+            String line = reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
                 String[] attributes = line.split(",");
 
                 int movieId = Integer.parseInt(attributes[0]);
@@ -63,38 +55,30 @@ public class RatingManagement {
                     for (String genre : attributes[2].split("-")) {
                         genres.add(genre);
                     }
-                }
-                else {
+                } else {
                     genres.add(attributes[2]);
                 }
 
                 Movie m = new Movie(movieId, title, genres);
-                movies.add(m); 
-                
+                movies.add(m);
             }
-
-            sc.close();
-
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-    
-        return movies; 
+
+        return movies;
     }
 
     private ArrayList<User> loadUsers(String userPath) {
-        
         ArrayList<User> users = new ArrayList<>();
-        try {
-            File userFile = new File(userPath);
-            Scanner sc = new Scanner(userFile); 
-            sc.nextLine(); // skip header
 
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
+        try (BufferedReader reader = new BufferedReader(new FileReader(userPath))) {
+            String line = reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
                 String[] attributes = line.split(",");
 
-                int userId = Integer.parseInt(attributes[0]);  
+                int userId = Integer.parseInt(attributes[0]);
                 String gender = attributes[1];
                 int age = Integer.parseInt(attributes[2]);
                 String occupation = attributes[3];
@@ -103,14 +87,11 @@ public class RatingManagement {
                 User u = new User(userId, gender, age, occupation, zipcode);
                 users.add(u);
             }
-
-            sc.close();
-
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return users; 
+        return users;
     }
 
     public ArrayList<Movie> getMovies() {
@@ -127,35 +108,38 @@ public class RatingManagement {
 
     // @Requirement 2
     public ArrayList<Movie> findMoviesByNameAndMatchRating(int userId, int rating) {
-       
-        ArrayList<Movie> MoviesByNameAndMatchRating = new ArrayList<>();
-    
+        ArrayList<Rating> ratingsMatchRequestOfUserId = new ArrayList<>();
+        ArrayList<Movie> moviesByNameAndMatchRating = new ArrayList<>();
+
         for (Rating r : ratings) {
             if (r.getUserId() == userId && r.getRating() >= rating) {
-    
-                for (Movie m : movies) { 
-                    if (m.getId() == r.getMovieId()) {
-                        MoviesByNameAndMatchRating.add(m);
-                        break;
-                    }
-                }
+                ratingsMatchRequestOfUserId.add(r);
             }
         }
-        
-        Collections.sort(MoviesByNameAndMatchRating, new Comparator<Movie>() {
-            @Override 
-            public int compare(Movie m1, Movie m2) {
-                return m1.getName().compareTo(m2.getName()); 
-            }
-        });
 
-        return MoviesByNameAndMatchRating; 
+        for (Rating r : ratingsMatchRequestOfUserId) {
+            Movie m = getMovieById(r.getMovieId());
+            moviesByNameAndMatchRating.add(m);
+        }
+
+        moviesByNameAndMatchRating.sort(Comparator.comparing(Movie::getName));
+
+        return moviesByNameAndMatchRating;
+    }
+
+    private Movie getMovieById(int movieId) {
+        for (Movie movie : movies) {
+            if (movie.getId() == movieId) {
+                return movie;
+            }
+        }
+        return null;
     }
 
     // Requirement 3
     public ArrayList<User> findUsersHavingSameRatingWithUser(int userId, int movieId) {
-       
-        ArrayList<User> UsersHavingSameRatingWithUser = new ArrayList<>();
+        ArrayList<User> usersHavingSameRatingWithUserId = new ArrayList<>();
+        ArrayList<Rating> ratingsHavingSameRatingWithUserId = new ArrayList<>();
         int ratingOfUserId = -1;
 
         for (Rating r : ratings) {
@@ -164,207 +148,177 @@ public class RatingManagement {
                 break;
             }
         }
-        
+
         for (Rating r : ratings) {
             if (r.getMovieId() == movieId && r.getRating() == ratingOfUserId && r.getUserId() != userId) {
-            
-                for (User u : users) {
-                    if (u.getId() == r.getUserId()) {
-                        UsersHavingSameRatingWithUser.add(u);
-                        break;
-                    }
-                }
+                ratingsHavingSameRatingWithUserId.add(r);
             }
         }
-        
-        return UsersHavingSameRatingWithUser; 
+
+        for (Rating r : ratingsHavingSameRatingWithUserId) {
+            User u = getUserById(r.getUserId());
+            usersHavingSameRatingWithUserId.add(u);
+        }
+
+        return usersHavingSameRatingWithUserId;
+    }
+
+    private User getUserById(int userId) {
+        for (User user : users) {
+            if (user.getId() == userId) {
+                return user;
+            }
+        }
+        return null;
     }
 
     // Requirement 4
     public ArrayList<String> findMoviesNameHavingSameReputation() {
-
         Map<Integer, Integer> movieRatingCount = new HashMap<>();
         ArrayList<String> movieNames = new ArrayList<>();
-    
+
         for (Rating r : ratings) {
             if (r.getRating() > 3) {
                 int count = movieRatingCount.getOrDefault(r.getMovieId(), 0);
-                movieRatingCount.put(r.getMovieId(), count + 1); 
+                movieRatingCount.put(r.getMovieId(), count + 1);
             }
         }
-        
+
         for (Map.Entry<Integer, Integer> entry : movieRatingCount.entrySet()) {
             if (entry.getValue() >= 2) {
-                for (Movie m : movies) {
-                    if (m.getId() == entry.getKey()) {
-                        movieNames.add(m.getName());
-                        break;
-                    }
-                }
+                Movie m = getMovieById(entry.getKey());
+                movieNames.add(m.getName());
             }
         }
-    
-        Collections.sort(movieNames, new Comparator<String>() {
-            @Override 
-            public int compare(String m1, String m2) {
-                return m1.compareTo(m2); 
-            }
-        });
-    
-        return movieNames; 
+
+        movieNames.sort(String::compareTo);
+
+        return movieNames;
     }
 
     // @Requirement 5
     public ArrayList<String> findMoviesMatchOccupationAndGender(String occupation, String gender, int k, int rating) {
-        
+        ArrayList<User> usersMatchOccupationAndGender = new ArrayList<>();
+        ArrayList<Rating> ratingsMatchRequest = new ArrayList<>();
         ArrayList<String> movieNames = new ArrayList<>();
-        ArrayList<User> userMatchOccupationAndGender = new ArrayList<>();
-        ArrayList<Rating> ratingOfUserMatchOccupationAndGender = new ArrayList<>();
-        
-        for(User u : users){
-            if(u.getOccupation().equals(occupation) && u.getGender().equals(gender)){
-                userMatchOccupationAndGender.add(u);
+
+        for (User u : users) {
+            if (u.getOccupation().equals(occupation) && u.getGender().equals(gender)) {
+                usersMatchOccupationAndGender.add(u);
             }
         }
 
-        for(Rating r : ratings){
-            for(User u : userMatchOccupationAndGender){
-                if(r.getUserId() == u.getId() && r.getRating() == rating){
-                    ratingOfUserMatchOccupationAndGender.add(r);
+        for (Rating r : ratings) {
+            for (User u : usersMatchOccupationAndGender) {
+                if (r.getUserId() == u.getId() && r.getRating() == rating) {
+                    ratingsMatchRequest.add(r);
+                    break;
                 }
             }
         }
 
-        for(Movie m : movies){
-            for(Rating r : ratingOfUserMatchOccupationAndGender){
-                if(m.getId() == r.getMovieId()){
-                    movieNames.add(m.getName());
-                }
-            }
+        for (Rating r : ratingsMatchRequest) {
+            Movie m = getMovieById(r.getMovieId());
+            movieNames.add(m.getName());
         }
-        
+
+        return getDistinctSortedKMovieNames(movieNames, k);
+    }
+
+    private ArrayList<String> getDistinctSortedKMovieNames(ArrayList<String> movieNames, int k) {
         Set<String> setOfMovieNames = new HashSet<>(movieNames);
-        ArrayList<String> StringOfMovieNames = new ArrayList<>(setOfMovieNames);
-        
-        Collections.sort(StringOfMovieNames, new Comparator<String>() {
-            @Override
-            public int compare(String str1, String str2) {
-                return str1.compareTo(str2);
-            }
-        });
+        ArrayList<String> stringMovieNames = new ArrayList<>(setOfMovieNames);
 
-        ArrayList<String> resultMovieNames = new ArrayList<>(StringOfMovieNames.subList(0, Math.min(StringOfMovieNames.size(), k)));
+        stringMovieNames.sort(String::compareTo);
 
-        return resultMovieNames;
+        return new ArrayList<>(stringMovieNames.subList(0, Math.min(stringMovieNames.size(), k)));
     }
 
     // @Requirement 6
     public ArrayList<String> findMoviesByOccupationAndLessThanRating(String occupation, int k, int rating) {
-        /* code here */
+        ArrayList<User> usersMatchOccupation = new ArrayList<>();
+        ArrayList<Rating> ratingsMatchRequest = new ArrayList<>();
         ArrayList<String> movieNames = new ArrayList<>();
-        ArrayList<User> userMatchOccupation = new ArrayList<>();
-        ArrayList<Rating> ratingOfUserMatchOccupation = new ArrayList<>();
-        
-        for(User u: users){
-            if(u.getOccupation().equals(occupation)){
-                userMatchOccupation.add(u);
+
+        for (User u : users) {
+            if (u.getOccupation().equals(occupation)) {
+                usersMatchOccupation.add(u);
             }
         }
 
-        for(Rating r : ratings){
-            for(User u : userMatchOccupation){
-                if(r.getUserId() == u.getId() && r.getRating() < rating){
-                    ratingOfUserMatchOccupation.add(r);
+        for (Rating r : ratings) {
+            for (User u : usersMatchOccupation) {
+                if (r.getUserId() == u.getId() && r.getRating() < rating) {
+                    ratingsMatchRequest.add(r);
+                    break;
                 }
             }
         }
 
-        for(Movie m : movies){
-            for(Rating r: ratingOfUserMatchOccupation){
-                if(m.getId() == r.getMovieId()){
-                    movieNames.add(m.getName());
-                }
-            }
+        for (Rating r : ratingsMatchRequest) {
+            Movie m = getMovieById(r.getMovieId());
+            movieNames.add(m.getName());
         }
-        
-        Set<String> setOfMovieNames = new HashSet<>(movieNames);
-        ArrayList<String> StringOfMovieNames = new ArrayList<>(setOfMovieNames);
-        
-        Collections.sort(StringOfMovieNames, new Comparator<String>() {
-            @Override
-            public int compare(String str1, String str2) {
-                return str1.compareTo(str2);
-            }
-        });
 
-        ArrayList<String> resultMovieNames = new ArrayList<>(StringOfMovieNames.subList(0, Math.min(StringOfMovieNames.size(), k)));
-
-        return resultMovieNames;
+        return getDistinctSortedKMovieNames(movieNames, k);
     }
 
     // @Requirement 7
     public ArrayList<String> findMoviesMatchLatestMovieOf(int userId, int rating, int k) {
-        /* code here */
         ArrayList<String> movieNames = new ArrayList<>();
+        ArrayList<Rating> userIdRatings = new ArrayList<>();
+        int latestMovieId = -1;
 
-        String genderOfUserId = "";
-        for (User u : users) { 
-            if (u.getId() == userId) {
-                genderOfUserId = u.getGender();
-            }
-        }
-
-        Rating latestRating = null;
         for (Rating r : ratings) {
-            if (r.getUserId() == userId && r.getRating() >= rating) {
-                if (latestRating == null || latestRating.getTimestamp() < r.getTimestamp()) {
-                    latestRating = r;
-                }
+            if (r.getUserId() == userId) {
+                userIdRatings.add(r);
             }
         }
+        userIdRatings.sort(Comparator.comparingLong(Rating::getTimestamp).reversed());
+        latestMovieId = userIdRatings.get(0).getMovieId();
+        Movie latestMovieOfUserId = getMovieById(latestMovieId);
 
-        ArrayList<String> movieGenresOfLatestRating = new ArrayList<>();
+        User user = getUserById(userId);
+        String genderOfUserId = user.getGender();
+
         for (Movie m : movies) {
-            if (m.getId() == latestRating.getMovieId()) {
-                movieGenresOfLatestRating = m.getGenres();
-                break;
+            if (m.getId() != latestMovieId && hasCommonGenre(m, latestMovieOfUserId)
+                    && hasRatingGreaterThanOrEqualTo(m.getId(), rating)
+                    && hasSameGender(genderOfUserId, m)) {
+                movieNames.add(m.getName());
             }
         }
 
-        ArrayList<User> userMatchRequest = new ArrayList<>();
+        return getDistinctSortedKMovieNames(movieNames, k);
+    }
+
+    private boolean hasCommonGenre(Movie movie, Movie latestMovieOfUserId) {
+        for (String genre : movie.getGenres()) {
+            if (latestMovieOfUserId.getGenres().contains(genre)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasRatingGreaterThanOrEqualTo(int movieId, int rating) {
         for (Rating r : ratings) {
-            if (r.getUserId() == userId && r.getRating() >= rating) {
-                for (User u : users) {
-                    if (u.getGender().equals(genderOfUserId)) {
-                        userMatchRequest.add(u);
-                        break;
-                    }
+            if (r.getMovieId() == movieId && r.getRating() >= rating) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasSameGender(String genderOfUserId, Movie movie) {
+        for (Rating r : ratings) {
+            if (r.getMovieId() == movie.getId()) {
+                User user = getUserById(r.getUserId());
+                if (user != null && user.getGender().equals(genderOfUserId)) {
+                    return true;
                 }
             }
         }
-    
-        for (User u : userMatchRequest) {
-            for (Movie m : movies) {
-                for (String genre : m.getGenres()) {
-                    if (movieGenresOfLatestRating.contains(genre)) {
-                        movieNames.add(m.getName());
-                    }
-                }
-            }
-        }
-
-        Set<String> setOfMovieNames = new HashSet<>(movieNames);
-        ArrayList<String> StringOfMovieNames = new ArrayList<>(setOfMovieNames);
-        
-        Collections.sort(StringOfMovieNames, new Comparator<String>() {
-            @Override
-            public int compare(String str1, String str2) {
-                return str1.compareTo(str2);
-            }
-        });
-
-        ArrayList<String> resultMovieNames = new ArrayList<>(StringOfMovieNames.subList(0, Math.min(StringOfMovieNames.size(), k)));
-
-        return resultMovieNames;
+        return false;
     }
 }

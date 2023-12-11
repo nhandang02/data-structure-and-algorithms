@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Assignment/Assignment.iml" filepath="$PROJECT_DIR$/Assignment/Assignment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Midterm_Review/DSA/DSA/Attached/Attached.iml" filepath="$PROJECT_DIR$/Midterm_Review/DSA/DSA/Attached/Attached.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Midterm_Review/DSA/DSA/DSA.iml" filepath="$PROJECT_DIR$/Midterm_Review/DSA/DSA/DSA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Midterm_Review/KT/KT.iml" filepath="$PROJECT_DIR$/Midterm_Review/KT/KT.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab02/Lab02.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab02/Lab02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab02_TheoGiaoTrinh/Lab02_TheoGiaoTrinh.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab02_TheoGiaoTrinh/Lab02_TheoGiaoTrinh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab04/Lab04.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab04/Lab04.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab05/Lab05.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab05/Lab05.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab10/Lab10.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab10/Lab10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lab_Applied/Lab_Applied.iml" filepath="$PROJECT_DIR$/Lab_Applied/Lab_Applied.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Midterm_Review/Midterm-Recap_DSA_2022_Eng/Midterm-Recap_DSA_2022_Eng.iml" filepath="$PROJECT_DIR$/Midterm_Review/Midterm-Recap_DSA_2022_Eng/Midterm-Recap_DSA_2022_Eng.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Midterm_Review/NoiDungOnTap_DSA_2022/NoiDungOnTap_DSA_2022.iml" filepath="$PROJECT_DIR$/Midterm_Review/NoiDungOnTap_DSA_2022/NoiDungOnTap_DSA_2022.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data-structure-and-algorithms.iml" filepath="$PROJECT_DIR$/data-structure-and-algorithms.iml" />
+    </modules>
+  </component>
+</project>
