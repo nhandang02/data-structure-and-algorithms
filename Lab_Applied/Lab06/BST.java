@@ -222,7 +222,7 @@ public class BST {
     ////Exercise07
     private int height(Node x) {
         if (x == null)
-            return -1;
+            return 0;
         return 1 + Math.max(height(x.left), height(x.right));
     }
 
@@ -266,7 +266,7 @@ public class BST {
     //Exercise10
     private int countLeaves(Node x) {
         if (x == null) {
-            return -1;
+            return 0;
         }
 
         if (x.left == null && x.right == null) {
@@ -330,6 +330,74 @@ public class BST {
     public void bfs() {
         // your code here
         bfs(root);
+    }
+
+    /////////////////////////////////////////////////////////
+    private int size(Node x) {
+        if (x == null) 
+            return 0;
+        return 1 + size(x.left) + size(x.right);
+    }
+
+    public int size() {
+        return size(root);
+    }
+
+    private int countNodeOneChild(Node x) {
+        if (x == null)
+            return 0;
+        if ( (x.left == null && x.right != null) || (x.right == null && x.left != null) )
+            return 1 + countNodeOneChild(x.left) + countNodeOneChild(x.right);
+        return countNodeOneChild(x.left) + countNodeOneChild(x.right);
+    }
+
+    public int countNodeOneChild() {
+        return countNodeOneChild(root);
+    }
+
+    private int sumKeyInRange(Node x, int a, int b) {
+        if (x == null) {
+          return 0; 
+        }
+        if (x.key < a) 
+            return sumKeyInRange(x.right, a, b);
+        if (x.key > b)
+            return sumKeyInRange(x.left, a, b);
+        return x.key + sumKeyInRange(x.left, a, b) + sumKeyInRange(x.right, a, b);
+    }
+      
+      public int sumKeyInRange(int a, int b) {
+        return sumKeyInRange(root, a, b);
+    }
+
+    private int sumOneChildNodes(Node x) {
+        if (x == null) {
+            return 0;
+        }
+        if ( (x.left == null && x.right != null) || (x.right == null && x.left != null)) {
+            return x.key + sumOneChildNodes(x.right) + sumOneChildNodes(x.left);
+        }
+        return sumOneChildNodes(x.right) + sumOneChildNodes(x.left);
+    }
+    public int sumOneChildNodes() {
+        return sumOneChildNodes(root);
+    }
+
+    private int maxOfLevel(Node x, int level, int current) {
+        if(x == null) return 0; 
+        
+        if(level == current) {
+          return x.key; 
+        }
+        
+        int left = maxOfLevel(x.left, level, current + 1);
+        int right = maxOfLevel(x.right, level, current + 1);
+        
+        return Math.max(left, right); 
+      }
+    
+    public int maxOfLevel(int level) {
+        return maxOfLevel(root, level, 0);  
     }
 }
 

@@ -5,16 +5,22 @@ public class Test {
         bst.insert(1);
         bst.insert(2);
         bst.insert(-2);
-        bst.insert(6);
         bst.insert(7);
+        bst.insert(6);
+        bst.insert(8);
+        bst.insert(9);
+        bst.insert(3);
+        bst.insert(-3);
 
         //          5
         //        /   \
-        //       1     6
-        //      / \     \
-        //    -2   2     7
+        //       1     7
+        //      / \    / \
+        //    -2   2  6   8
+        //    /     \       \
+        //  -3       3       9
 
-        //NLR, LRN, LNR
+        /* //NLR, LRN, LNR
         System.out.print("NLR: ");
         bst.NLR();
         System.out.println();
@@ -93,6 +99,7 @@ public class Test {
         System.out.print("After delete key: ");
         bst.NLR();
         System.out.println();
+        */
 
         //Height
         System.out.println();
@@ -111,10 +118,46 @@ public class Test {
         System.out.println(bst.sumEven());
         System.out.println();
 
+        //CountLeaves
+        System.out.println();
+        System.out.print("LEAVES of the tree: ");
+        System.out.println(bst.countLeaves());
+        System.out.println();
+
         //SumEven Leaves
         System.out.println();
         System.out.print("Sum all EVEN LEAVES elements of the tree: ");
         System.out.println(bst.sumEvenKeysAtLeaves());
+        System.out.println();
+
+        //Size Of Tree
+        System.out.println();
+        System.out.print("Size of tree: ");
+        System.out.println(bst.size());
+        System.out.println();
+
+        //Count Node One Child
+        System.out.println();
+        System.out.print("Nodes One Child: ");
+        System.out.println(bst.countNodeOneChild());
+        System.out.println();
+
+        //Sum Key In Range
+        System.out.println();
+        System.out.print("sum Key In Range[-2, 7]: ");
+        System.out.println(bst.sumKeyInRange(-2, 7));
+        System.out.println();
+
+        //Sum Node One Child
+        System.out.println();
+        System.out.print("Sum All Nodes One Child: ");
+        System.out.println(bst.sumOneChildNodes());
+        System.out.println();
+
+        //Find Node MAX At Level X
+        System.out.println();
+        System.out.print("Find Node Max At Level 3: ");
+        System.out.println(bst.maxOfLevel(3));
         System.out.println();
 
         //BFS
